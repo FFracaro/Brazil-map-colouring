@@ -1,23 +1,29 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
+using UnityEngine.UI;
+
+/// <summary>
+///  Esta classe é responsável pela colorização dos vértices
+///  do grafo que representa o Brasil utilizando uma técnica
+///  de busca em profundidade
+/// </summary>
 
 public class DepthFirstSearch : MonoBehaviour
 {
-    public List<GameObject> Graph;
-    private Stack<GameObject> PilhaEstados = new Stack<GameObject>();
+    public List<Vertice> Graph;
+    private Stack<Vertice> PilhaEstados = new Stack<Vertice>();
     public Color[] colors;
+    public Text Time;
 
     public void DFS(int EstadoInicial)
     {
-        // Variável temporária para um vértice
-        GameObject TempVertice;
-
         // Variável temporária para o script de um vértice
-        Vertice TempScriptVertice;
+        Vertice TempVertice;
 
         // Variável temporária para o script de um vértice de fronteira
-        Vertice TempScriptVerticeFronteira;
+        Vertice TempVerticeFronteira;
 
         // Vetor utilizado para contabilizar as cores da fronteira de um vértice
         int[] CoresUsadas = { 0, 0, 0, 0, 0 };
@@ -30,30 +36,43 @@ public class DepthFirstSearch : MonoBehaviour
         {
 
             TempVertice = PilhaEstados.Pop();
-            TempScriptVertice = TempVertice.GetComponent<Vertice>();
 
-            if (!TempScriptVertice.WasVisited)
+            if (!TempVertice.WasVisited)
             {
-                TempScriptVertice.WasVisited = true;
+                TempVertice.WasVisited = true;
  
-                foreach(GameObject vertice in TempScriptVertice.Edges)
+                foreach(Vertice v in TempVertice.Edges)
                 {
-                    TempScriptVerticeFronteira = vertice.GetComponent<Vertice>();
+                    TempVerticeFronteira = v.GetComponent<Vertice>();
 
-                    if(TempScriptVerticeFronteira.CorEstado != -1)
+                    // Verifica a cor do vértice na fronteira
+                    if(TempVerticeFronteira.CorEstado != -1)
                     {
-                        CoresUsadas[TempScriptVerticeFronteira.CorEstado]++;
+                        CoresUsadas[TempVerticeFronteira.CorEstado]++;
                     }
 
-                    PilhaEstados.Push(vertice);
+                    PilhaEstados.Push(v);
                 }
 
-                TempScriptVertice.CorEstado = SetColorToEstado(CoresUsadas);
+                /*  Adiciona a cor ao vértice atual baseado nas informações das cores 
+                    dos vértices da fronteita */
+                TempVertice.CorEstado = SetColorToEstado(CoresUsadas);
                 ResetCoresUsadas(CoresUsadas);
             }
         }
 
-        SetColorToMap(Graph);
+    }
+
+    public void DFSTimed(int EstadoInicial)
+    {
+        Stopwatch watch = new Stopwatch();
+        watch.Start();
+
+        DFS(EstadoInicial);
+
+        watch.Stop();
+
+        Time.text = "Tempo medido: " + watch.Elapsed.TotalMilliseconds + " ms.";
     }
 
     private int SetColorToEstado(int[] Cores)
@@ -74,16 +93,26 @@ public class DepthFirstSearch : MonoBehaviour
         }
     }
 
-    public void SetColorToMap(List<GameObject> Graph)
+    public void SetColorsToMap()
     {
         Vertice TempVertice;
 
-        foreach(GameObject v in Graph)
+        foreach(Vertice v in Graph)
         {
             TempVertice = v.GetComponent<Vertice>();
 
             if(TempVertice.CorEstado != -1)
                 TempVertice.SpriteEstado.color = colors[TempVertice.CorEstado];
+        }
+    }
+
+    public void ResetVertices()
+    {
+        foreach (Vertice v in Graph)
+        {
+            v.CorEstado = -1;
+            v.WasVisited = false;
+            v.SpriteEstado.color = Color.white;
         }
     }
 }

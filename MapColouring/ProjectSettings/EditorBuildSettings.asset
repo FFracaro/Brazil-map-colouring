@@ -6,9 +6,21 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/MenuInicial.unity
+    guid: a9709e32a74a7dd488d0fc7d0a3c54a3
+  - enabled: 1
+    path: Assets/Scenes/SceneWP.unity
+    guid: f556929b516ca894492cd149032d6d58
+  - enabled: 1
+    path: Assets/Scenes/SceneDFS.unity
+    guid: 75f9f2b21232ac449a8f9fb1d631c18a
+  - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/MapaAlgo2.unity
     guid: 15272954ec8390648843a87e9b36c97c
+  - enabled: 0
+    path: Assets/Scenes/SceneBacktracking.unity
+    guid: 3eeeaee532776af43989b6760a92fde4
   m_configObjects: {}
